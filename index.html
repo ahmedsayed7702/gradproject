@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Machine Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js" defer></script>
+    <style>
+        body {
+            background-color: rgba(0, 0, 0, 0.8); /* 80% transparent black background */
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for body */
+            font-family: 'Roboto', sans-serif; /* Modern font */
+            color: #e0e0e0; /* Light gray text */
+        }
+        main {
+            background-color: rgba(50, 50, 50, 0.9); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            max-width: 800px;
+            margin: 20px auto;
+            transition: all 0.3s ease-in-out; /* Animation for main content */
+            animation: slideIn 1s ease-in-out; /* Slide-in effect for main content */
+        }
+        main:hover {
+            box-shadow: 0 0 30px rgba(255, 143, 143, 0.7); /* Enhanced shadow effect */
+            transform: scale(1.02); /* Slightly scale up on hover */
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 10px;
+            }
+        }
+        nav ul li a {
+            transition: color 0.3s ease-in-out; /* Animation for navigation links */
+        }
+        nav ul li a:hover {
+            color: rgba(255, 255, 255, 0.7); /* 70% transparent white color on hover */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Shadow effect on hover */
+        }
+        #controlsContainer {
+            background-color: rgba(50, 50, 50, 0.9); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for controls container */
+        }
+        #status {
+            background-color: rgba(50, 50, 50, 0.9); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for status */
+        }
+        #statusBar {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #333; /* Dark gray background */
+            color: #e0e0e0; /* Light gray font */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            font-size: 1.2em;
+            animation: pulse 2s infinite; /* Pulse effect for status bar */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        button {
+            background-color: #ff5722; /* Industrial orange */
+            color: #fff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #e64a19; /* Darker industrial orange */
+            transform: scale(1.05);
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.9); /* 90% transparent black background */
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for header */
+        }
+        header h1 {
+            color: #ff5722; /* Industrial orange */
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.7); /* Shadow effect */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://www.3erp.com/wp-content/uploads/2020/04/what-is-injection-molding.png" alt="Logo" style="width: 100px; height: auto;">
+        <h1>Plastic Injection Machine Control Interface</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Overview</a></li>
+                <li><a href="technical-details.html">Technical Details</a></li>
+                <li><a href="operations-details.html">Operations Details</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <label for="operationNameInput" style="color: #e0e0e0; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); font-size: 1.5em;">Operation Name:</label>
+            <input type="text" id="operationNameInput" placeholder="Enter operation name">
+            <button id="setOperationNameButton">Set Operation Name</button>
+        </div>
+        <div id="copiesInputContainer" style="display: none;">
+            <label for="copiesInput" style="color: #e0e0e0; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); font-size: 1.5em;">Number of Copies to Produce:</label>
+            <input type="number" id="copiesInput" value="0" min="0">
+            <button id="copiesInputButton">Select Copies</button>
+        </div>
+        <div id="choiceContainer" style="display: none;">
+            <button id="nowButton">Now</button>
+            <button id="scheduleButton">Schedule</button>
+        </div>
+        <div id="scheduleContainer" style="display: none;">
+            <label for="startTimeInput">Start Time:</label>
+            <input type="datetime-local" id="startTimeInput">
+            <button id="scheduleStartButton">Schedule Start</button>
+        </div>
+        <div id="controlsContainer" style="display: none;">
+            <button id="startButton">Start Machine</button>
+            <button id="stopButton">Stop Machine</button>
+            <button id="repairButton">Repair Machine</button>
+            <button id="continueButton">Continue Machine</button>
+        </div>
+        <div id="status">
+            <p>Machine Status: <span id="machineStatus">Stopped</span></p>
+            <p>Copies Produced: <span id="copiesProduced">0</span></p>
+            <p>Machine Running Time: <span id="runningTime">0</span> seconds</p>
+            <p id="copiesLeft">You can produce 30 more copies before needing to add more plastic.</p>
+            <p id="repairTime" style="display: none;">Repair Time: <span id="repairTimeValue">0</span> seconds</p>
+        </div>
+        <div id="statusBar">Machine is currently stopped.</div>
+        <div id="nicePartMessage" style="display: none; color: rgba(255, 255, 0, 0.5); font-size: 1.2em; margin-top: 20px;">
+            Nice part, check the details.
+        </div>
+        <div id="awesomeGif" style="display: none; text-align: center; margin-top: 20px;">
+            <img src="https://media.tenor.com/VkkclesmiaMAAAAi/awesome-awesome-gifs.gif" alt="Awesome">
+        </div>
+        <div id="error" style="display: none;"></div>
+        <div id="fireworks" class="fireworks"></div>
+    </main>
+    <script>
+        function sendSignalToESP32(signal, parameter = '') {
+            fetch(`http://your-esp32-ip/${signal}?param=${parameter}`)
+                .then(response => response.json())
+                .then(data => console.log('Signal sent:', data))
+                .catch(error => console.error('Error sending signal:', error));
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => {
+            startMachine();
+            sendSignalToESP32('start', 'A');
+            uploadDataToGitHub({ status: 'started' });
+        });
+
+        document.getElementById("stopButton").addEventListener("click", () => {
+            stopMachine();
+            sendSignalToESP32('stop');
+            uploadDataToGitHub({ status: 'stopped' });
+        });
+
+        document.getElementById("repairButton").addEventListener("click", () => {
+            repairMachine();
+            sendSignalToESP32('repair');
+            uploadDataToGitHub({ status: 'repair' });
+        });
+
+        document.getElementById("continueButton").addEventListener("click", () => {
+            continueMachine();
+            sendSignalToESP32('continue');
+            uploadDataToGitHub({ status: 'continued' });
+        });
+
+        async function uploadDataToGitHub(data) {
+            try {
+                const response = await fetch(`${GITHUB_API_URL}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Update data.json',
+                        content: btoa(JSON.stringify(data)),
+                        sha: await getFileSha()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload data to GitHub');
+                }
+
+                console.log('Data uploaded to GitHub');
+            } catch (error) {
+                console.error('Error uploading data to GitHub:', error);
+            }
+        }
+
+        async function getFileSha() {
+            try {
+                const response = await fetch(`${GITHUB_API_URL}/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get file SHA');
+                }
+
+                const data = await response.json();
+                return data.sha;
+            } catch (error) {
+                console.error('Error getting file SHA:', error);
+                return null;
+            }
+        }
+    </script>
+</body>
+</html>
